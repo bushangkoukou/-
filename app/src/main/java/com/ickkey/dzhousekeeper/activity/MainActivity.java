@@ -16,10 +16,9 @@ public class MainActivity extends SupportActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-            loadRootFragment(R.id.fl_container, LoginFragment.newInstance(LaunchFragment.class));
+        loadRootFragment(R.id.fl_container, LoginFragment.newInstance(LaunchFragment.class));
 
     }
-
 
 
     @Override

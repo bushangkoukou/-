@@ -25,7 +25,6 @@ import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 /**
  * Created by hhj on 2017/7/27.
- *
  */
 
 public class LoginFragment extends BaseFragment {
@@ -35,48 +34,48 @@ public class LoginFragment extends BaseFragment {
     EditText et_pwd;
 
 
-    @OnClick({R.id.tv_register,R.id.tv_forget_pwd,R.id.btn_login})
-    public void onClick(View v){
-        switch (v.getId()){
+    @OnClick({R.id.tv_register, R.id.tv_forget_pwd, R.id.btn_login})
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.tv_register:
                 start(RegisterFragment.newInstance(RegisterFragment.class));
                 break;
             case R.id.btn_login:
-                if(TextUtils.isEmpty(et_username.getText().toString())){
+                if (TextUtils.isEmpty(et_username.getText().toString())) {
                     showToast("请输入用户名");
                     return;
 
                 }
-                if(TextUtils.isEmpty(et_pwd.getText().toString())){
+                if (TextUtils.isEmpty(et_pwd.getText().toString())) {
                     showToast("请输入密码");
                     return;
 
                 }
-                if(et_pwd.getText().toString().trim().length()<6){
+                if (et_pwd.getText().toString().trim().length() < 6) {
                     showToast(getString(R.string.pwd_too_short));
                     return;
 
                 }
-                LoginReq loginReq=new LoginReq();
-                loginReq.mobile=et_username.getText().toString();
-                loginReq.password=et_pwd.getText().toString();
-                NetEngine.getInstance().sendLoginRequest(_mActivity,new CommonResponseListener<LoginResponse>(){
+                LoginReq loginReq = new LoginReq();
+                loginReq.mobile = et_username.getText().toString();
+                loginReq.password = et_pwd.getText().toString();
+                NetEngine.getInstance().sendLoginRequest(_mActivity, new CommonResponseListener<LoginResponse>() {
                     @Override
                     public void onSucceed(LoginResponse loginResponse) {
                         super.onSucceed(loginResponse);
-                        loginResponse.pwd=et_pwd.getText().toString();
-                        loginResponse.tokenTimeOut=String.valueOf(System.currentTimeMillis()+loginResponse.expire*1000);
+                        loginResponse.pwd = et_pwd.getText().toString();
+                        loginResponse.tokenTimeOut = String.valueOf(System.currentTimeMillis() + loginResponse.expire * 1000);
                         App.getInstance().saveUserInfo(loginResponse);
-                        Bundle bundle=new Bundle();
-                        bundle.putInt(ConstantValue.GESTURE_PAGER_TYPE,ConstantValue.GESTURE_HANDLE_LOGIN_IN);
-                        if(App.getInstance().getCache().getAsBinary(ConstantValue.GESTURE_PASSWORD)!=null){
-                            startWithPop(GestureLoginFragment.newInstance(GestureLoginFragment.class,bundle));
-                        }else {
-                            startWithPop(CreateGestureFragment.newInstance(CreateGestureFragment.class,bundle));
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(ConstantValue.GESTURE_PAGER_TYPE, ConstantValue.GESTURE_HANDLE_LOGIN_IN);
+                        if (App.getInstance().getCache().getAsBinary(ConstantValue.GESTURE_PASSWORD) != null) {
+                            startWithPop(GestureLoginFragment.newInstance(GestureLoginFragment.class, bundle));
+                        } else {
+                            startWithPop(CreateGestureFragment.newInstance(CreateGestureFragment.class, bundle));
                         }
 
                     }
-                },fragment_tag,loginReq);
+                }, fragment_tag, loginReq);
 
 
                 break;
@@ -87,7 +86,6 @@ public class LoginFragment extends BaseFragment {
 
 
     }
-
 
 
     @Override
@@ -102,7 +100,7 @@ public class LoginFragment extends BaseFragment {
 
     @Override
     public void initView() {
-        setFragmentAnimator(new FragmentAnimator(R.anim.anim_fade_in,R.anim.anim_fade_out, me.yokeyword.fragmentation.R.anim.h_fragment_pop_enter,me.yokeyword.fragmentation.R.anim.h_fragment_pop_exit));
+        setFragmentAnimator(new FragmentAnimator(R.anim.anim_fade_in, R.anim.anim_fade_out, me.yokeyword.fragmentation.R.anim.h_fragment_pop_enter, me.yokeyword.fragmentation.R.anim.h_fragment_pop_exit));
         setTitleGone();
 
 
