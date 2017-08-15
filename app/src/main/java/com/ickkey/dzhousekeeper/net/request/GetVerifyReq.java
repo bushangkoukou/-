@@ -6,4 +6,5 @@ package com.ickkey.dzhousekeeper.net.request;
 
 public class GetVerifyReq extends BaseRequest {
     public String mobile;
+    public int sendType;
 }

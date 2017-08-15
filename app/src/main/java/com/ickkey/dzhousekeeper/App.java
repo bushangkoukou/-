@@ -18,7 +18,8 @@ public class App extends MultiDexApplication {
     }
 
 
-    private   Handler handler=new Handler(Looper.getMainLooper());
+    private Handler handler = new Handler(Looper.getMainLooper());
+
     public static App getInstance() {
         return instance;
     }
@@ -35,24 +36,27 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        instance=this;
-        aCache=ACache.get(getInstance());
+        instance = this;
+        aCache = ACache.get(getInstance());
         CrashHandler.getInstance().init(getApplicationContext());
     }
-    public LoginResponse getUserInfo(){
-        if(userInfo==null){
-            userInfo= (LoginResponse) aCache.getAsObject(ConstantValue.CACHE_KEY_TOKEN_USER_INFO);
+
+    public LoginResponse getUserInfo() {
+        if (userInfo == null) {
+            userInfo = (LoginResponse) aCache.getAsObject(ConstantValue.CACHE_KEY_TOKEN_USER_INFO);
         }
         return userInfo;
 
     }
-    public void saveUserInfo (LoginResponse userInfo){
-        this.userInfo=userInfo;
-        aCache.put(ConstantValue.CACHE_KEY_TOKEN_USER_INFO,userInfo);
+
+    public void saveUserInfo(LoginResponse userInfo) {
+        this.userInfo = userInfo;
+        aCache.put(ConstantValue.CACHE_KEY_TOKEN_USER_INFO, userInfo);
 
 
     }
-    public void logOut(){
+
+    public void logOut() {
         aCache.clear();
 
     }

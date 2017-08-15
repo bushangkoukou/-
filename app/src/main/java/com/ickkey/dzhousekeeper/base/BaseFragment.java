@@ -37,7 +37,12 @@ public abstract class BaseFragment extends BaseBackFragment {
     public Handler handler= App.getInstance().getMainThreadHandler();
     public final String fragment_tag=getClass().getSimpleName()+ UUID.randomUUID();
 
-    public static BaseFragment newInstance(Class<? extends  BaseFragment> clazz,Bundle...args) {
+    @Override
+    public boolean onBackPressedSupport() {
+        return super.onBackPressedSupport();
+    }
+
+    public static BaseFragment newInstance(Class<? extends  BaseFragment> clazz, Bundle...args) {
 
         BaseFragment fragment = null;
         try {

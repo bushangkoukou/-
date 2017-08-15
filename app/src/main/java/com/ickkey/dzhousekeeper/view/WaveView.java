@@ -8,8 +8,6 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.ickkey.dzhousekeeper.R;
-
 /**
  * Created by wangbin11 on 2017/8/3.
  */
