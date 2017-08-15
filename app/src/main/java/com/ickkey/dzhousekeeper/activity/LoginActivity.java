@@ -85,7 +85,7 @@ public class LoginActivity extends BaseActivity {
 
                 break;
             case R.id.tv_forget_pwd:
-
+                moveNext(ResetPasswordActivity.class);
                 break;
         }
 

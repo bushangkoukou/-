@@ -106,7 +106,7 @@
                     android:layout_width="216dp"
                     android:layout_height="wrap_content"
                     android:text="注册"
-                    android:textColor="@color/global_tv_color"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="12sp" />
 
                 <TextView
