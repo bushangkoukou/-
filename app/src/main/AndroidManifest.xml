@@ -36,5 +36,11 @@
         <activity android:name=".activity.RegisterActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.ResetPasswordActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>
