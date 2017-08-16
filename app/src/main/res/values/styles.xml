@@ -31,4 +31,14 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
+    <style name="layout_guide_dot">
+        <item name="android:layout_width">10dp</item>
+        <item name="android:layout_height">10dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:clickable">false</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:src">@drawable/dot</item>
+    </style>
+
 </resources>

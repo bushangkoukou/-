@@ -47,6 +47,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="40dp"
+            android:layout_marginBottom="30dp"
             android:padding="18dp"
             android:text="东北大学东北大学东北大学的的非非得的俄方的4565313"
             android:textSize="24sp"

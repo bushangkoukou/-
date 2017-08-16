@@ -47,7 +47,7 @@ public class LoginActivity extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_register:
-                moveNext(MainActivity.class);
+                moveNext(HouseActivity.class);
                 break;
             case R.id.btn_login:
                 if (TextUtils.isEmpty(et_username.getText().toString())) {
