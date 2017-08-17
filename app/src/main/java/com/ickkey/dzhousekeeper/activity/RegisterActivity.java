@@ -18,7 +18,6 @@ import com.ickkey.dzhousekeeper.net.response.BaseResponse;
 import com.ickkey.dzhousekeeper.net.response.GetVerifyResp;
 import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.utils.ValidatorUtils;
-import com.ickkey.dzhousekeeper.view.WaveView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -29,8 +28,6 @@ import butterknife.OnClick;
  */
 
 public class RegisterActivity extends BaseActivity {
-    @BindView(R.id.waveView)
-    WaveView waveView;
     @BindView(R.id.ll_phone)
     LinearLayout ll_phone;
     @BindView(R.id.ll_pwd)
@@ -75,8 +72,6 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     void init() {
-        waveView.setWaterAlpha(1f);
-        waveView.changWater(0.7f);
 
         btn_verify.setClickable(false);
         btn_verify.setBackgroundResource(R.drawable.login_btn_bg_disable);
@@ -228,23 +223,5 @@ public class RegisterActivity extends BaseActivity {
                 }, activity_tag, registerReq);
                 break;
         }
-    }
-
-
-    @Override
-    protected void onResume() {
-        waveView.startWave();
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        waveView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                waveView.stopWave();
-            }
-        }, 500);
-        super.onPause();
     }
 }

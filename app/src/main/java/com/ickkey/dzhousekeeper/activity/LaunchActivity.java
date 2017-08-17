@@ -34,7 +34,7 @@ public class LaunchActivity extends BaseActivity {
                 moveNext(LoginActivity.class);
                 finish();
             }
-        }, 2000);
+        }, 3000);
     }
 
     @Override
@@ -53,6 +53,12 @@ public class LaunchActivity extends BaseActivity {
             }
         }, 500);
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        waveView.stopWave();
+        super.onDestroy();
     }
 
     @Override

@@ -13,7 +13,6 @@ import com.ickkey.dzhousekeeper.net.NetEngine;
 import com.ickkey.dzhousekeeper.net.request.LoginReq;
 import com.ickkey.dzhousekeeper.net.response.LoginResponse;
 import com.ickkey.dzhousekeeper.utils.DialogUtils;
-import com.ickkey.dzhousekeeper.view.WaveView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -25,8 +24,6 @@ import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity {
 
-    @BindView(R.id.waveView)
-    WaveView waveView;
     @BindView(R.id.et_username)
     EditText et_username;
     @BindView(R.id.et_pwd)
@@ -39,16 +36,13 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     void init() {
-        waveView.setWaterAlpha(1);
-        waveView.changWater(0.7f);
     }
 
     @OnClick({R.id.tv_register, R.id.tv_forget_pwd, R.id.btn_login})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_register:
-                moveNext(ChangePasswordActivity.class);
-//                moveNext(HouseActivity.class);
+                moveNext(RegisterActivity.class);
                 break;
             case R.id.btn_login:
                 if (TextUtils.isEmpty(et_username.getText().toString())) {
@@ -91,23 +85,5 @@ public class LoginActivity extends BaseActivity {
         }
 
 
-    }
-
-    @Override
-    protected void onResume() {
-        waveView.startWave();
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-
-        waveView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                waveView.stopWave();
-            }
-        }, 500);
-        super.onPause();
     }
 }

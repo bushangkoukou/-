@@ -197,13 +197,21 @@ public class WaveView extends View implements Runnable{
         while (changLevel > 0 && mWateLevel < percent || changLevel < 0
                 && mWateLevel > percent) {
             mWateLevel += mStep;
-            try {
-                Thread.sleep(1);
-                postInvalidate();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+//            try {
+//                Thread.sleep(1);
+//                postInvalidate();
+//
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    postInvalidate();
+                }
+            },1);
         }
     }
 
