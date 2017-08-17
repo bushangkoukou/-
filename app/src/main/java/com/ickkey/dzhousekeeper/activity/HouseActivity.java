@@ -1,18 +1,30 @@
 package com.ickkey.dzhousekeeper.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Layout;
+import android.text.TextPaint;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andexert.library.RippleView;
 import com.ickkey.dzhousekeeper.R;
+import com.ickkey.dzhousekeeper.utils.DisplayUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -52,6 +64,8 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     // 记录当前选中位置
     private int currentIndex;
 
+    private int pageCount;
+
     @Override
     int getLayoutId() {
         return R.layout.activity_house_layout;
@@ -65,25 +79,92 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
 
-        // 初始化引导图片列表
-//        for (int i = 0; i < pics.length; i++) {
-//            ImageView iv = new ImageView(this);
-//            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//            iv.setLayoutParams(mParams);
-//            iv.setImageResource(pics[i]);
-//            if (i == pics.length - 1) {
-//                iv.setOnClickListener(this);
-//            }
-//            views.add(iv);
-//        }
+        initViewPager();
+        // 初始化底部小点
+        initDots();
+    }
+
+    private void initViewPager() {
+        view_pager.removeAllViews();
+
+        int count = 5;
+
+        pageCount = count % 3 == 0 ? count / 3 : count / 3 + 1;
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int width = dm.widthPixels;
+        List<View> groups = new ArrayList<>();
+        for (int i = 0; i < pageCount; i++) {
+            LinearLayout group = new LinearLayout(mContext);
+            LinearLayout.LayoutParams groupParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+            group.setOrientation(LinearLayout.HORIZONTAL);
+            group.setLayoutParams(groupParams);
+            group.setPadding(0, 20, 0, 20);
+            for (int j = i * 3; j < (i + 1) * 3 && j < count; j++) {
+                final LinearLayout menu = new LinearLayout(mContext);
+                LinearLayout.LayoutParams menuParams = new LinearLayout.LayoutParams(width / 3, LinearLayout.LayoutParams.WRAP_CONTENT);
+                menu.setOrientation(LinearLayout.VERTICAL);
+                menuParams.gravity = Gravity.CENTER_HORIZONTAL;
+                TextView tv_status = new TextView(mContext);
+                tv_status.setText("离线");
+                tv_status.setTextColor(Color.BLACK);
+                tv_status.setTextSize(12);
+                tv_status.setSingleLine();
+                LinearLayout.LayoutParams tvStatusParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                tvStatusParams.gravity = Gravity.CENTER_HORIZONTAL;
+                menu.addView(tv_status, tvStatusParams);
+
+
+                FrameLayout frameLayout = new FrameLayout(mContext);
+                LinearLayout.LayoutParams flParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                flParams.gravity = Gravity.CENTER_HORIZONTAL;
+                flParams.setMargins(0, 10, 0, 10);
+
+                ImageView iv_room = new ImageView(mContext);
+                iv_room.setImageResource(R.drawable.ic_house_on);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.gravity = Gravity.CENTER;
+                iv_room.setLayoutParams(params);
+
+                frameLayout.addView(iv_room);
+
+                ImageView iv_key = new ImageView(mContext);
+                iv_key.setImageResource(R.drawable.ic_room_selected);
+                FrameLayout.LayoutParams iv_keyParams = new FrameLayout.LayoutParams(DisplayUtil.dp2px(mContext, 26), DisplayUtil.dp2px(mContext, 56));
+                iv_keyParams.gravity = Gravity.CENTER;
+
+                frameLayout.addView(iv_key, iv_keyParams);
+
+                menu.addView(frameLayout, flParams);
+
+                TextView tv_name = new TextView(mContext);
+                tv_name.setText("room1");
+                tv_name.setTextColor(Color.BLACK);
+                tv_name.setTextSize(12);
+                tv_name.setSingleLine();
+                LinearLayout.LayoutParams tvNameParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                tvNameParams.gravity = Gravity.CENTER_HORIZONTAL;
+                menu.addView(tv_name, tvNameParams);
+
+//                menu.setBackgroundResource(R.drawable.item_selector);
+
+                menu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                group.addView(menu, menuParams);
+            }
+            groups.add(group);
+        }
+
         // 初始化Adapter
-        vpAdapter = new ViewPagerAdapter(mContext);
+        vpAdapter = new ViewPagerAdapter(groups);
         view_pager.setAdapter(vpAdapter);
         // 绑定回调
         view_pager.setOnPageChangeListener(this);
 
-        // 初始化底部小点
-        initDots();
     }
 
     private void initDots() {
@@ -142,16 +223,18 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
     public class ViewPagerAdapter extends PagerAdapter {
 
-        Context mContext;
+        List<View> menuGrops;
 
-        public ViewPagerAdapter(Context context) {
-
-            mContext = context;
+        public ViewPagerAdapter(List<View> menuGrops) {
+            this.menuGrops = menuGrops;
         }
 
         @Override
         public int getCount() {
-            return 2;
+            if (menuGrops != null) {
+                return menuGrops.size();
+            }
+            return 0;
         }
 
         @Override
@@ -162,14 +245,13 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView(menuGrops.get(position));
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-
-            View view = getLayoutInflater().inflate(R.layout.item_viewpager_layout, container, false);
-            container.addView(view);
-            return view;
+            container.addView(menuGrops.get(position));
+            return menuGrops.get(position);
         }
     }
 }
