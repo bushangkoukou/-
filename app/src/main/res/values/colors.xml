@@ -13,5 +13,7 @@
     <color name="gesture_error">#FF0000</color>
     <color name="update_btn_disable">#d8d8d8</color>
 
+    <color name="grey_bg">#d8d8d8</color>
+
     <color name="white">#ffffff</color>
 </resources>
