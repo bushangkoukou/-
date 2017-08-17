@@ -43,6 +43,7 @@
             android:background="@drawable/bg_search_btn"/>
         
         <TextView
+            android:id="@+id/tv_house_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
@@ -50,9 +51,9 @@
             android:layout_marginTop="40dp"
             android:layout_marginBottom="30dp"
             android:padding="18dp"
-            android:text="东北大学东北大学东北大学的的非非得的俄方的4565313"
             android:textSize="24sp"
             android:background="@drawable/bg_home_text"
+            android:visibility="gone"
             android:gravity="center"/>
 
     </LinearLayout>

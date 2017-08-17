@@ -11,4 +11,5 @@ public interface Urls {
         String REGISTER=BASE_URL+"/api/register";
         String UPPWD=BASE_URL+"/api/uppwd";
         String UPUSERNAME=BASE_URL+"/api/upusername";
+        String SEARCHLOCKS=BASE_URL+"/api/searchlocks";
 }
