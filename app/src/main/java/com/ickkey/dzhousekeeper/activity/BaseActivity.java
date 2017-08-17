@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.ickkey.dzhousekeeper.App;
+import com.ickkey.dzhousekeeper.net.response.LoginResponse;
 import com.ickkey.dzhousekeeper.utils.ToastUtils;
 
 import java.util.UUID;
@@ -21,12 +24,18 @@ abstract class BaseActivity extends Activity implements View.OnClickListener {
 
     protected Context mContext;
 
-    protected final String activity_tag = getClass().getSimpleName() + UUID.randomUUID();
+    protected Handler mHandler;
+
+    protected LoginResponse userInfo;
+
+    protected final String tag = getClass().getSimpleName() + UUID.randomUUID();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        mHandler = App.getInstance().getMainThreadHandler();
+        userInfo = App.getInstance().getUserInfo();
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         init();

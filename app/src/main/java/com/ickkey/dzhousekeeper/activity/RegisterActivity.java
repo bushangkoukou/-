@@ -189,7 +189,7 @@ public class RegisterActivity extends BaseActivity {
                         verifyCode = getVerifyResp.phoneCode;
                         step2();
                     }
-                }, activity_tag, req);
+                }, tag, req);
 
                 break;
             case R.id.btn_submit_verify:
@@ -220,7 +220,7 @@ public class RegisterActivity extends BaseActivity {
                         showToast("注册成功");
                         finish();
                     }
-                }, activity_tag, registerReq);
+                }, tag, registerReq);
                 break;
         }
     }

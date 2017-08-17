@@ -3,6 +3,7 @@ package com.ickkey.dzhousekeeper.fragment;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -15,7 +16,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andexert.library.RippleView;
+import com.ickkey.dzhousekeeper.App;
 import com.ickkey.dzhousekeeper.R;
+import com.ickkey.dzhousekeeper.activity.ChangePasswordActivity;
+import com.ickkey.dzhousekeeper.activity.LoginActivity;
+import com.ickkey.dzhousekeeper.net.response.LoginResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,19 +58,28 @@ public class UserFragment extends Fragment {
     private void initView() {
         btn_left_base.setVisibility(View.INVISIBLE);
         tv_title_base.setText("个人中心");
+
+        LoginResponse userInfo = App.getInstance().getUserInfo();
+        if (userInfo != null) {
+            tv_userName.setText(userInfo.username);
+        }
+
     }
 
     @OnClick({R.id.btn_logout, R.id.rel_changeUserName, R.id.rel_changePassword})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_logout:
-
+                App.getInstance().logOut();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+                getActivity().finish();
                 break;
             case R.id.rel_changeUserName:
                 showEditDialog();
                 break;
 
             case R.id.rel_changePassword:
+                startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
                 break;
 
         }

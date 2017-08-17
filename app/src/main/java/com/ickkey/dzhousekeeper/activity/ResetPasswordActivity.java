@@ -189,7 +189,7 @@ public class ResetPasswordActivity extends BaseActivity {
                         verifyCode = getVerifyResp.phoneCode;
                         step2();
                     }
-                }, activity_tag, req);
+                }, tag, req);
 
                 break;
             case R.id.btn_submit_verify:
@@ -220,7 +220,7 @@ public class ResetPasswordActivity extends BaseActivity {
                         showToast("密码重置成功");
                         finish();
                     }
-                }, activity_tag, registerReq);
+                }, tag, registerReq);
                 break;
         }
     }

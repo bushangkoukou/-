@@ -71,11 +71,11 @@ public class LoginActivity extends BaseActivity {
                         loginResponse.pwd = et_pwd.getText().toString();
                         loginResponse.tokenTimeOut = String.valueOf(System.currentTimeMillis() + loginResponse.expire * 1000);
                         App.getInstance().saveUserInfo(loginResponse);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(ConstantValue.GESTURE_PAGER_TYPE, ConstantValue.GESTURE_HANDLE_LOGIN_IN);
-                        showToast("登陆成功");
+                        showToast("登录成功");
+                        moveNext(MainActivity.class);
+                        finish();
                     }
-                }, activity_tag, loginReq);
+                }, tag, loginReq);
 
 
                 break;
