@@ -75,10 +75,6 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     void init() {
         tv_title_base.setText("房屋信息");
 
-        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-
         initViewPager();
         // 初始化底部小点
         initDots();
@@ -99,7 +95,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
             LinearLayout.LayoutParams groupParams = new LinearLayout.LayoutParams(width, ViewGroup.LayoutParams.WRAP_CONTENT);
             group.setOrientation(LinearLayout.HORIZONTAL);
             group.setLayoutParams(groupParams);
-            group.setPadding(0, 20, 0, 20);
+            group.setPadding(0, 20, 0, 35);
             for (int j = i * 3; j < (i + 1) * 3 && j < count; j++) {
                 final LinearLayout menu = new LinearLayout(mContext);
                 LinearLayout.LayoutParams menuParams = new LinearLayout.LayoutParams(width / 3, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -107,8 +103,8 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 menuParams.gravity = Gravity.CENTER_HORIZONTAL;
                 TextView tv_status = new TextView(mContext);
                 tv_status.setText("离线");
-                tv_status.setTextColor(Color.BLACK);
-                tv_status.setTextSize(12);
+                tv_status.setTextColor(getResources().getColor(R.color.green_font));
+                tv_status.setTextSize(16);
                 tv_status.setSingleLine();
                 LinearLayout.LayoutParams tvStatusParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 tvStatusParams.gravity = Gravity.CENTER_HORIZONTAL;
@@ -118,7 +114,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 FrameLayout frameLayout = new FrameLayout(mContext);
                 LinearLayout.LayoutParams flParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 flParams.gravity = Gravity.CENTER_HORIZONTAL;
-                flParams.setMargins(0, 10, 0, 10);
+                flParams.setMargins(0, 15, 0, 15);
 
                 ImageView iv_room = new ImageView(mContext);
                 iv_room.setImageResource(R.drawable.ic_house_on);
@@ -129,6 +125,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 frameLayout.addView(iv_room);
 
                 ImageView iv_key = new ImageView(mContext);
+                iv_key.setId(R.id.iv_key);
                 iv_key.setImageResource(R.drawable.ic_room_selected);
                 FrameLayout.LayoutParams iv_keyParams = new FrameLayout.LayoutParams(DisplayUtil.dp2px(mContext, 26), DisplayUtil.dp2px(mContext, 56));
                 iv_keyParams.gravity = Gravity.CENTER;
@@ -139,8 +136,8 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
                 TextView tv_name = new TextView(mContext);
                 tv_name.setText("room1");
-                tv_name.setTextColor(Color.BLACK);
-                tv_name.setTextSize(12);
+                tv_name.setTextColor(getResources().getColor(R.color.green_font));
+                tv_name.setTextSize(16);
                 tv_name.setSingleLine();
                 LinearLayout.LayoutParams tvNameParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 tvNameParams.gravity = Gravity.CENTER_HORIZONTAL;
@@ -151,7 +148,8 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 menu.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        ImageView iv_key = (ImageView) v.findViewById(R.id.iv_key);
+                        iv_key.setVisibility(iv_key.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                     }
                 });
                 group.addView(menu, menuParams);

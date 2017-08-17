@@ -16,4 +16,6 @@
     <color name="grey_bg">#d8d8d8</color>
 
     <color name="white">#ffffff</color>
+    <color name="grey_font">#9b9b9b</color>
+    <color name="green_font">#7e9f1a</color>
 </resources>
