@@ -23,6 +23,7 @@ import com.ickkey.dzhousekeeper.net.response.GetLocksResponse;
 import com.ickkey.dzhousekeeper.net.response.SearchLocksResponse;
 import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.utils.DisplayUtil;
+import com.ickkey.dzhousekeeper.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,8 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
     private SearchLocksResponse.LockMsg lockMsg;
 
+    private List<Integer> lockIds;
+
     @Override
     int getLayoutId() {
         return R.layout.activity_house_layout;
@@ -117,6 +120,8 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
         btn_getLock.setVisibility(View.VISIBLE);
         view_pager.removeAllViews();
 
+        lockIds = new ArrayList<>();
+
         int count = list.size();
         pageCount = count % 3 == 0 ? count / 3 : count / 3 + 1;
 
@@ -135,7 +140,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
             group.setPadding(0, 20, 0, 35);
             for (int j = i * 3; j < (i + 1) * 3 && j < count; j++) {
 
-                GetLocksResponse.LockMsg lockMsg = list.get(i);
+                final GetLocksResponse.LockMsg lockMsg = list.get(i);
 
                 final LinearLayout menu = new LinearLayout(mContext);
                 LinearLayout.LayoutParams menuParams = new LinearLayout.LayoutParams(width / 3, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -169,6 +174,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 ImageView iv_key = new ImageView(mContext);
                 iv_key.setId(R.id.iv_key);
                 iv_key.setImageResource(R.drawable.ic_room_selected);
+                iv_key.setVisibility(View.INVISIBLE);
                 FrameLayout.LayoutParams iv_keyParams = new FrameLayout.LayoutParams(DisplayUtil.dp2px(mContext, 26), DisplayUtil.dp2px(mContext, 56));
                 iv_keyParams.gravity = Gravity.CENTER;
 
@@ -185,13 +191,23 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 tvNameParams.gravity = Gravity.CENTER_HORIZONTAL;
                 menu.addView(tv_name, tvNameParams);
 
-//                menu.setBackgroundResource(R.drawable.item_selector);
-
                 menu.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ImageView iv_key = (ImageView) v.findViewById(R.id.iv_key);
-                        iv_key.setVisibility(iv_key.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                        boolean isSelected = iv_key.getVisibility() == View.VISIBLE;
+                        iv_key.setVisibility(isSelected ? View.GONE : View.VISIBLE);
+                        if (!isSelected) {
+                            lockIds.add(lockMsg.id);
+                        } else {
+                            if (lockIds.contains(lockMsg.id))
+                                lockIds.remove((Integer) lockMsg.id);
+                        }
+                        if (lockIds.isEmpty()) {
+                            btn_getLock.setBackground(getResources().getDrawable(R.drawable.bg_btn_disable));
+                        } else {
+                            btn_getLock.setBackground(getResources().getDrawable(R.drawable.bg_btn_enable));
+                        }
                     }
                 });
                 group.addView(menu, menuParams);

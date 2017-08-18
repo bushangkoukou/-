@@ -20,7 +20,12 @@ import com.ickkey.dzhousekeeper.App;
 import com.ickkey.dzhousekeeper.R;
 import com.ickkey.dzhousekeeper.activity.ChangePasswordActivity;
 import com.ickkey.dzhousekeeper.activity.LoginActivity;
+import com.ickkey.dzhousekeeper.net.CommonResponseListener;
+import com.ickkey.dzhousekeeper.net.NetEngine;
+import com.ickkey.dzhousekeeper.net.request.UpdateUserNameReq;
+import com.ickkey.dzhousekeeper.net.response.BaseResponse;
 import com.ickkey.dzhousekeeper.net.response.LoginResponse;
+import com.ickkey.dzhousekeeper.utils.ToastUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,10 +91,12 @@ public class UserFragment extends Fragment {
     }
 
     private void showEditDialog() {
-        EditText editText = new EditText(getActivity());
+        final EditText editText = new EditText(getActivity());
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = 15;
+        params.rightMargin = 15;
         editText.setLayoutParams(params);
 
         new AlertDialog.Builder(getActivity()).setTitle("修改昵称")
@@ -97,16 +104,33 @@ public class UserFragment extends Fragment {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        final String toBeUserName = editText.getText().toString().trim();
+                        if (!toBeUserName.isEmpty()) {
 
-                        dialog.dismiss();
-
+                            UpdateUserNameReq updateUserNameReq = new UpdateUserNameReq();
+                            updateUserNameReq.token = App.getInstance().getUserInfo().token;
+                            updateUserNameReq.userId = App.getInstance().getUserInfo().userId;
+                            updateUserNameReq.username = toBeUserName;
+                            NetEngine.getInstance().sendUpdateUserNameRequest(getActivity(), new CommonResponseListener<BaseResponse>() {
+                                @Override
+                                public void onSucceed(BaseResponse baseResponse) {
+                                    super.onSucceed(baseResponse);
+                                    App.getInstance().getUserInfo().username = toBeUserName;
+                                    App.getInstance().saveUserInfo(App.getInstance().getUserInfo());
+                                    tv_userName.setText(toBeUserName);
+                                    ToastUtils.showShortToast(getActivity(), "修改成功");
+                                }
+                            }, "1", updateUserNameReq);
+                        } else {
+                            ToastUtils.showShortToast(getActivity(), "请输入要修改的昵称");
+                        }
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-                        dialog.dismiss();
-                    }
+                dialog.dismiss();
+            }
         }).show();
     }
 }
