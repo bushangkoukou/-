@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.ickkey.dzhousekeeper.App;
 import com.ickkey.dzhousekeeper.R;
 import com.ickkey.dzhousekeeper.activity.HouseActivity;
@@ -23,6 +26,8 @@ import com.ickkey.dzhousekeeper.net.request.SearchLocksReq;
 import com.ickkey.dzhousekeeper.net.response.SearchLocksResponse;
 import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.utils.ToastUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +46,8 @@ public class HomeFragment extends Fragment {
     Button btn_search;
     @BindView(R.id.et_houseNO)
     EditText et_houseNO;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
 
     private SearchLocksResponse searchLocksResponse;
 
@@ -103,6 +110,18 @@ public class HomeFragment extends Fragment {
             case R.id.tv_house_detail:
                 startActivity(new Intent(getActivity(), HouseActivity.class));
                 break;
+        }
+    }
+
+
+    private class Madapter extends BaseQuickAdapter<SearchLocksResponse.LockMsg, BaseViewHolder> {
+
+        private Madapter(List<SearchLocksResponse.LockMsg> list) {
+            super(R.layout.activity_changepassword_layout, list);
+        }
+
+        @Override
+        protected void convert(BaseViewHolder holder, SearchLocksResponse.LockMsg lockMsg) {
         }
     }
 }
