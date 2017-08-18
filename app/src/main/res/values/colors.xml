@@ -18,4 +18,6 @@
     <color name="white">#ffffff</color>
     <color name="grey_font">#9b9b9b</color>
     <color name="green_font">#7e9f1a</color>
+
+    <color name="lock_pw_bg">#c6d599</color>
 </resources>

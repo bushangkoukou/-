@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,8 +41,6 @@ import butterknife.OnClick;
 
 public class HomeFragment extends Fragment {
 
-    @BindView(R.id.tv_house_detail)
-    TextView tv_house_detail;
     @BindView(R.id.btn_search)
     Button btn_search;
     @BindView(R.id.et_houseNO)
@@ -50,6 +49,9 @@ public class HomeFragment extends Fragment {
     RecyclerView recyclerView;
 
     private SearchLocksResponse searchLocksResponse;
+
+    private List<SearchLocksResponse.LockMsg> list;
+    private HouseAdapter adapter;
 
     @Nullable
     @Override
@@ -64,7 +66,6 @@ public class HomeFragment extends Fragment {
     private void initView() {
 
         btn_search.setClickable(false);
-
         et_houseNO.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -80,13 +81,46 @@ public class HomeFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 if (et_houseNO.getText().toString().length() > 0) {
                     btn_search.setClickable(true);
+                    btn_search.setBackground(getResources().getDrawable(R.drawable.bg_btn_enable));
+                } else {
+                    btn_search.setClickable(false);
+                    btn_search.setBackground(getResources().getDrawable(R.drawable.bg_btn_disable));
                 }
             }
         });
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        //设置布局管理器
+        recyclerView.setLayoutManager(layoutManager);
+        //设置为垂直布局，这也是默认的
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        adapter = new HouseAdapter(list);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                if (searchLocksResponse != null) {
+//                    if (searchLocksResponse.isfull) {
+//                        ToastUtils.showLongToast(getActivity(), "房间已住满，您没权限进入");
+//                    } else {
+//                        Intent intent = new Intent(getActivity(), HouseActivity.class);
+//                        intent.putExtra("LockMsg", list.get(position));
+//                        startActivity(intent);
+//                    }
+
+                    Intent intent = new Intent(getActivity(), HouseActivity.class);
+                    intent.putExtra("LockMsg", list.get(position));
+                    startActivity(intent);
+                }
+            }
+        });
+
+
+
     }
 
-    @OnClick({R.id.tv_house_detail, R.id.btn_search})
+    @OnClick({R.id.btn_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_search:
@@ -101,10 +135,19 @@ public class HomeFragment extends Fragment {
                 NetEngine.getInstance().getHttpResult(new CommonResponseListener() {
                     @Override
                     public void onSucceed(Object obj) {
-                        searchLocksResponse = (SearchLocksResponse) obj;
-                        ToastUtils.showLongToast(getActivity(), searchLocksResponse.msg.size() + "");
+                        super.onSucceed(obj);
+                        if (obj != null && obj instanceof SearchLocksResponse) {
+                            searchLocksResponse = (SearchLocksResponse) obj;
+                            list = searchLocksResponse.msg;
+                            adapter.setNewData(list);
+                        }
                     }
 
+                    @Override
+                    public void onError(String errorMsg) {
+                        super.onError(errorMsg);
+                        adapter.setNewData(null);
+                    }
                 }, Urls.SEARCHLOCKS, SearchLocksResponse.class, getActivity(), searchLocksReq);
                 break;
             case R.id.tv_house_detail:
@@ -114,14 +157,23 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private class Madapter extends BaseQuickAdapter<SearchLocksResponse.LockMsg, BaseViewHolder> {
+    private class HouseAdapter extends BaseQuickAdapter<SearchLocksResponse.LockMsg, BaseViewHolder> {
 
-        private Madapter(List<SearchLocksResponse.LockMsg> list) {
-            super(R.layout.activity_changepassword_layout, list);
+        private HouseAdapter(List<SearchLocksResponse.LockMsg> list) {
+            super(R.layout.item_lock_layout, list);
         }
 
         @Override
         protected void convert(BaseViewHolder holder, SearchLocksResponse.LockMsg lockMsg) {
+
+            if (lockMsg != null) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(lockMsg.province).append(lockMsg.city).append(lockMsg.district).append(lockMsg.installAddress);
+
+                TextView textView = holder.getView(R.id.tv_house_detail);
+                textView.setText(sb.toString());
+            }
+
         }
     }
 }

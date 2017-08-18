@@ -1,18 +1,11 @@
 package com.ickkey.dzhousekeeper.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Layout;
-import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,6 +15,13 @@ import android.widget.TextView;
 
 import com.andexert.library.RippleView;
 import com.ickkey.dzhousekeeper.R;
+import com.ickkey.dzhousekeeper.net.CommonResponseListener;
+import com.ickkey.dzhousekeeper.net.NetEngine;
+import com.ickkey.dzhousekeeper.net.Urls;
+import com.ickkey.dzhousekeeper.net.request.BaseRequest;
+import com.ickkey.dzhousekeeper.net.response.GetLocksResponse;
+import com.ickkey.dzhousekeeper.net.response.SearchLocksResponse;
+import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.utils.DisplayUtil;
 
 import java.util.ArrayList;
@@ -51,12 +51,12 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     TextView tv_title_base;
     @BindView(R.id.btn_getLock)
     Button btn_getLock;
+    @BindView(R.id.rel_rooms)
+    RelativeLayout rel_rooms;
+    @BindView(R.id.ll_dots)
+    LinearLayout ll_dots;
 
     private ViewPagerAdapter vpAdapter;
-    private List<View> views;
-
-    private static final int[] pics = { R.drawable.ic_logo,
-            R.drawable.ic_logo};
 
     // 底部小店图片
     private ImageView[] dots;
@@ -65,6 +65,11 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     private int currentIndex;
 
     private int pageCount;
+
+    private List<GetLocksResponse.LockMsg> lockMsgList;
+    private GetLocksResponse getLocksResponse;
+
+    private SearchLocksResponse.LockMsg lockMsg;
 
     @Override
     int getLayoutId() {
@@ -75,17 +80,49 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     void init() {
         tv_title_base.setText("房屋信息");
 
-        initViewPager();
-        // 初始化底部小点
-        initDots();
+        lockMsg = (SearchLocksResponse.LockMsg) getIntent().getSerializableExtra("LockMsg");
+        tv_houseNO.setText(lockMsg.houseNo);
+        StringBuffer sb = new StringBuffer();
+        sb.append(lockMsg.province).append(lockMsg.city).append(lockMsg.district).append(lockMsg.installAddress);
+        tv_house_address.setText(sb.toString());
+        tv_housekeeper.setText(userInfo.username);
+
+        initData();
     }
 
-    private void initViewPager() {
+    private void initData() {
+        BaseRequest request = new BaseRequest();
+        request.userId = userInfo.userId;
+        request.token = userInfo.token;
+
+        DialogUtils.showProgressDialog(mContext);
+
+        NetEngine.getInstance().getHttpResult(new CommonResponseListener() {
+            @Override
+            public void onSucceed(Object obj) {
+                if (obj != null && obj instanceof GetLocksResponse) {
+                    getLocksResponse = (GetLocksResponse) obj;
+                    lockMsgList = getLocksResponse.msg;
+                    if (lockMsgList != null && !lockMsgList.isEmpty()) {
+                        initViewPager(lockMsgList);
+                    }
+                }
+            }
+
+        }, Urls.GETLOCKS, GetLocksResponse.class, mContext, request);
+    }
+
+    private void initViewPager(List<GetLocksResponse.LockMsg> list) {
+        rel_rooms.setVisibility(View.VISIBLE);
+        btn_getLock.setVisibility(View.VISIBLE);
         view_pager.removeAllViews();
 
-        int count = 5;
-
+        int count = list.size();
         pageCount = count % 3 == 0 ? count / 3 : count / 3 + 1;
+
+        if (pageCount > 1) {
+            initDots(pageCount);
+        }
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int width = dm.widthPixels;
@@ -97,13 +134,18 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
             group.setLayoutParams(groupParams);
             group.setPadding(0, 20, 0, 35);
             for (int j = i * 3; j < (i + 1) * 3 && j < count; j++) {
+
+                GetLocksResponse.LockMsg lockMsg = list.get(i);
+
                 final LinearLayout menu = new LinearLayout(mContext);
                 LinearLayout.LayoutParams menuParams = new LinearLayout.LayoutParams(width / 3, LinearLayout.LayoutParams.WRAP_CONTENT);
                 menu.setOrientation(LinearLayout.VERTICAL);
                 menuParams.gravity = Gravity.CENTER_HORIZONTAL;
                 TextView tv_status = new TextView(mContext);
-                tv_status.setText("离线");
-                tv_status.setTextColor(getResources().getColor(R.color.green_font));
+                tv_status.setText(lockMsg.isOnlie == 1 ? "在线" : "离线");
+                tv_status.setTextColor(lockMsg.isOnlie == 1 ?
+                        getResources().getColor(R.color.green_font)
+                        : getResources().getColor(R.color.grey_font));
                 tv_status.setTextSize(16);
                 tv_status.setSingleLine();
                 LinearLayout.LayoutParams tvStatusParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -117,7 +159,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 flParams.setMargins(0, 15, 0, 15);
 
                 ImageView iv_room = new ImageView(mContext);
-                iv_room.setImageResource(R.drawable.ic_house_on);
+                iv_room.setImageResource(lockMsg.isOnlie == 1 ? R.drawable.ic_house_on : R.drawable.ic_house_off);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 params.gravity = Gravity.CENTER;
                 iv_room.setLayoutParams(params);
@@ -135,7 +177,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 menu.addView(frameLayout, flParams);
 
                 TextView tv_name = new TextView(mContext);
-                tv_name.setText("room1");
+                tv_name.setText(lockMsg.roomNo);
                 tv_name.setTextColor(getResources().getColor(R.color.green_font));
                 tv_name.setTextSize(16);
                 tv_name.setSingleLine();
@@ -165,18 +207,16 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
     }
 
-    private void initDots() {
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
-
-        dots = new ImageView[pics.length];
+    private void initDots(int pageCount) {
+        ll_dots.setVisibility(View.VISIBLE);
+        ImageView[] dots = new ImageView[pageCount];
 
         // 循环取得小点图片
-        for (int i = 0; i < pics.length; i++) {
+        for (int i = 0; i < pageCount; i++) {
             // 得到一个LinearLayout下面的每一个子元素
-            dots[i] = (ImageView) ll.getChildAt(i);
+            dots[i] = (ImageView) ll_dots.getChildAt(i);
             dots[i].setEnabled(true);// 都设为灰色
         }
-
         currentIndex = 0;
         dots[currentIndex].setEnabled(false);// 设置为白色，即选中状态
     }
@@ -209,7 +249,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     }
 
     private void setCurDot(int positon) {
-        if (positon < 0 || positon > pics.length - 1 || currentIndex == positon) {
+        if (positon < 0 || positon > pageCount - 1 || currentIndex == positon) {
             return;
         }
 

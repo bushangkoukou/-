@@ -12,4 +12,5 @@ public interface Urls {
     String UPPWD = BASE_URL + "/api/uppwd";
     String UPUSERNAME = BASE_URL + "/api/upusername";
     String SEARCHLOCKS = BASE_URL + "/api/searchlocks";
+    String GETLOCKS = BASE_URL + "/api/getlocks";
 }

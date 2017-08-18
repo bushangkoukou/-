@@ -102,7 +102,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_search_btn"
+        android:background="@drawable/bg_btn_enable"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
         android:text="退出登录"

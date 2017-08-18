@@ -13,8 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@drawable/home_bg"
-            android:scaleType="fitXY"
-            android:contentDescription="@string/app_name"/>
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitXY" />
 
         <EditText
             android:id="@+id/et_houseNO"
@@ -23,13 +23,13 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="40dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
             android:background="@drawable/bg_home_edit"
             android:drawableRight="@drawable/ic_search"
-            android:hint="请输入房源编号"/>
+            android:hint="请输入房源编号"
+            android:paddingBottom="3dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:paddingTop="3dp" />
 
         <Button
             android:id="@+id/btn_search"
@@ -37,29 +37,17 @@
             android:layout_height="45dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_btn_disable"
+            android:clickable="false"
             android:text="查询"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_search_btn"/>
-        
-        <TextView
-            android:id="@+id/tv_house_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="30dp"
-            android:padding="18dp"
-            android:textSize="24sp"
-            android:background="@drawable/bg_home_text"
-            android:visibility="gone"
-            android:gravity="center"/>
+            android:textColor="@color/white" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>

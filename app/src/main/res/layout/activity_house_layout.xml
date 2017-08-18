@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="20dp">
+            android:paddingTop="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,13 +30,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
+                    android:textSize="18sp"
                     android:text="房屋编号：" />
 
                 <TextView
                     android:id="@+id/tv_houseNO"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CKASKDJSAH" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -52,13 +53,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
+                    android:textSize="18sp"
                     android:text="物业地址：" />
 
                 <TextView
                     android:id="@+id/tv_house_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CKASKDJSAH" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -74,18 +76,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
+                    android:textSize="18sp"
                     android:text="所属管家：" />
 
                 <TextView
                     android:id="@+id/tv_housekeeper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CKASKDJSAH" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/rel_rooms"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <com.ickkey.dzhousekeeper.view.CustomViewPager
                     android:id="@+id/view_pager"
@@ -95,12 +100,13 @@
                 </com.ickkey.dzhousekeeper.view.CustomViewPager>
 
                 <LinearLayout
-                    android:id="@+id/ll"
+                    android:id="@+id/ll_dots"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="20dip"
+                    android:visibility="invisible"
                     android:orientation="horizontal">
 
                     <ImageView style="@style/layout_guide_dot" />
@@ -117,12 +123,13 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/bg_search_btn"
+                android:background="@drawable/bg_btn_enable"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:text="获取密码"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone"/>
             
             <LinearLayout
                 android:id="@+id/ll_lock"
