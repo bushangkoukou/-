@@ -13,4 +13,6 @@ public interface Urls {
     String UPUSERNAME = BASE_URL + "/api/upusername";
     String SEARCHLOCKS = BASE_URL + "/api/searchlocks";
     String GETLOCKS = BASE_URL + "/api/getlocks";
+
+    String FIND_PWD=BASE_URL+"/api/findpwd";
 }

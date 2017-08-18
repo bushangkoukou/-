@@ -213,7 +213,7 @@ public class ResetPasswordActivity extends BaseActivity {
                 registerReq.mobile = et_phone.getText().toString().trim();
                 registerReq.password = et_pwd.getText().toString().trim();
                 DialogUtils.showProgressDialog(mContext);
-                NetEngine.getInstance().sendRegisterRequest(mContext, new CommonResponseListener<BaseResponse>() {
+                NetEngine.getInstance().sendFindPwdRequest(mContext, new CommonResponseListener<BaseResponse>() {
                     @Override
                     public void onSucceed(BaseResponse registerResp) {
                         super.onSucceed(registerResp);

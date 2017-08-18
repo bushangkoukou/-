@@ -55,4 +55,11 @@ public class NetEngine extends BaseNetEngine {
     public void sendUpdateUserNameRequest(Context context, final OnResponseListener<BaseResponse> onResponseListener, String tag, BaseRequest... req) {
         sendPostRequest(Urls.UPUSERNAME, context, BaseResponse.class, onResponseListener, tag, req);
     }
+
+    /**
+     * 找回密码
+     */
+    public void sendFindPwdRequest(Context context, final OnResponseListener<BaseResponse> onResponseListener, String tag, BaseRequest...req){
+        sendPostRequest(Urls.FIND_PWD,context,BaseResponse.class,onResponseListener,tag,req);
+    }
 }

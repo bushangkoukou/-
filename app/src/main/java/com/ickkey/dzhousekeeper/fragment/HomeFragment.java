@@ -1,6 +1,7 @@
 package com.ickkey.dzhousekeeper.fragment;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -124,6 +126,10 @@ public class HomeFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_search:
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0); //强制隐藏键盘
+
                 String houseNO = et_houseNO.getText().toString();
 
                 SearchLocksReq searchLocksReq = new SearchLocksReq();
