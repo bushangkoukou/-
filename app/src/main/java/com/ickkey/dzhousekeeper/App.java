@@ -1,7 +1,9 @@
 package com.ickkey.dzhousekeeper;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.multidex.MultiDexApplication;
 
 import com.ickkey.dzhousekeeper.net.response.LoginResponse;
@@ -33,12 +35,15 @@ public class App extends MultiDexApplication {
     private ACache aCache;
     private LoginResponse userInfo;
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
         aCache = ACache.get(getInstance());
         CrashHandler.getInstance().init(getApplicationContext());
+        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 
     public LoginResponse getUserInfo() {
@@ -49,15 +54,22 @@ public class App extends MultiDexApplication {
 
     }
 
+    public void setPwd(String pwd){
+        sharedPreferences.edit().putString("pwd",pwd).commit();
+    }
+    public String getPwd(){
+        return sharedPreferences.getString("pwd",null);
+    }
+
     public void saveUserInfo(LoginResponse userInfo) {
         this.userInfo = userInfo;
         aCache.put(ConstantValue.CACHE_KEY_TOKEN_USER_INFO, userInfo);
-
 
     }
 
     public void logOut() {
         aCache.clear();
+        sharedPreferences.edit().clear().commit();
 
     }
 }

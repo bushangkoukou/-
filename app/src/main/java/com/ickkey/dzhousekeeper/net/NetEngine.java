@@ -6,7 +6,6 @@ import com.ickkey.dzhousekeeper.net.request.BaseRequest;
 import com.ickkey.dzhousekeeper.net.response.BaseResponse;
 import com.ickkey.dzhousekeeper.net.response.GetVerifyResp;
 import com.ickkey.dzhousekeeper.net.response.LoginResponse;
-import com.ickkey.dzhousekeeper.net.response.SearchLocksResponse;
 
 /**
  * Created by Administrator on 2017/7/25.
@@ -55,12 +54,5 @@ public class NetEngine extends BaseNetEngine {
      */
     public void sendUpdateUserNameRequest(Context context, final OnResponseListener<BaseResponse> onResponseListener, String tag, BaseRequest... req) {
         sendPostRequest(Urls.UPUSERNAME, context, BaseResponse.class, onResponseListener, tag, req);
-    }
-
-    /**
-     * 查找锁
-     */
-    public void searchLocksRequest(Context context, final OnResponseListener<SearchLocksResponse> onResponseListener, String tag, BaseRequest... req) {
-        sendPostRequest(Urls.SEARCHLOCKS, context, SearchLocksResponse.class, onResponseListener, tag, req);
     }
 }

@@ -70,6 +70,7 @@ public class LoginActivity extends BaseActivity {
                         super.onSucceed(loginResponse);
                         loginResponse.pwd = et_pwd.getText().toString();
                         loginResponse.tokenTimeOut = String.valueOf(System.currentTimeMillis() + loginResponse.expire * 1000);
+                        App.getInstance().setPwd(et_pwd.getText().toString());
                         App.getInstance().saveUserInfo(loginResponse);
                         showToast("登录成功");
                         moveNext(MainActivity.class);

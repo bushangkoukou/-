@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +15,11 @@ import android.widget.TextView;
 
 import com.ickkey.dzhousekeeper.App;
 import com.ickkey.dzhousekeeper.R;
-import com.ickkey.dzhousekeeper.activity.ChangePasswordActivity;
 import com.ickkey.dzhousekeeper.activity.HouseActivity;
-import com.ickkey.dzhousekeeper.activity.LoginActivity;
-import com.ickkey.dzhousekeeper.activity.MainActivity;
 import com.ickkey.dzhousekeeper.net.CommonResponseListener;
 import com.ickkey.dzhousekeeper.net.NetEngine;
+import com.ickkey.dzhousekeeper.net.Urls;
 import com.ickkey.dzhousekeeper.net.request.SearchLocksReq;
-import com.ickkey.dzhousekeeper.net.response.LoginResponse;
 import com.ickkey.dzhousekeeper.net.response.SearchLocksResponse;
 import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.utils.ToastUtils;
@@ -45,6 +41,8 @@ public class HomeFragment extends Fragment {
     Button btn_search;
     @BindView(R.id.et_houseNO)
     EditText et_houseNO;
+
+    private SearchLocksResponse searchLocksResponse;
 
     @Nullable
     @Override
@@ -73,7 +71,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (et_houseNO.getText().toString().length() > 0 ) {
+                if (et_houseNO.getText().toString().length() > 0) {
                     btn_search.setClickable(true);
                 }
             }
@@ -92,13 +90,15 @@ public class HomeFragment extends Fragment {
                 searchLocksReq.token = App.getInstance().getUserInfo().token;
                 searchLocksReq.userId = App.getInstance().getUserInfo().userId;
                 DialogUtils.showProgressDialog(getActivity());
-                NetEngine.getInstance().searchLocksRequest(getActivity(), new CommonResponseListener<SearchLocksResponse>() {
+
+                NetEngine.getInstance().getHttpResult(new CommonResponseListener() {
                     @Override
-                    public void onSucceed(SearchLocksResponse searchLocksResponse) {
-                        super.onSucceed(searchLocksResponse);
-                        ToastUtils.showShortToast(getActivity(), searchLocksResponse.city);
+                    public void onSucceed(Object obj) {
+                        searchLocksResponse = (SearchLocksResponse) obj;
+                        ToastUtils.showLongToast(getActivity(), searchLocksResponse.msg.size() + "");
                     }
-                }, "1", searchLocksReq);
+
+                }, Urls.SEARCHLOCKS, SearchLocksResponse.class, getActivity(), searchLocksReq);
                 break;
             case R.id.tv_house_detail:
                 startActivity(new Intent(getActivity(), HouseActivity.class));
