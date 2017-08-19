@@ -210,6 +210,7 @@ public class RegisterActivity extends BaseActivity {
                 }
                 RegisterReq registerReq = new RegisterReq();
                 registerReq.code = verifyCode;
+                registerReq.regtype = 0;
                 registerReq.mobile = et_phone.getText().toString().trim();
                 registerReq.password = et_pwd.getText().toString().trim();
                 DialogUtils.showProgressDialog(mContext);
