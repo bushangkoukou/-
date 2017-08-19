@@ -104,7 +104,7 @@ public class ChangePasswordActivity extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_check:
-                if (et_old_pw.getText().toString().trim().equals(userInfo.pwd)) {
+                if (et_old_pw.getText().toString().trim().equals(App.getInstance().getUserInfo().pwd)) {
                     step2();
                 } else {
                     showToast("密码不正确");
@@ -123,8 +123,8 @@ public class ChangePasswordActivity extends BaseActivity {
                 DialogUtils.showProgressDialog(mContext);
                 UpdatePwdReq updatePwdReq = new UpdatePwdReq();
                 updatePwdReq.password = et_pw_twice.getText().toString().trim();
-                updatePwdReq.token = userInfo.token;
-                updatePwdReq.userId = userInfo.userId;
+                updatePwdReq.token = App.getInstance().getUserInfo().token;
+                updatePwdReq.userId = App.getInstance().getUserInfo().userId;
                 NetEngine.getInstance().sendUpdatePwdRequest(mContext, new CommonResponseListener<BaseResponse>() {
                     @Override
                     public void onSucceed(BaseResponse baseResponse) {

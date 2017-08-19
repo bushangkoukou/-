@@ -25,6 +25,7 @@ import com.ickkey.dzhousekeeper.net.NetEngine;
 import com.ickkey.dzhousekeeper.net.request.UpdateUserNameReq;
 import com.ickkey.dzhousekeeper.net.response.BaseResponse;
 import com.ickkey.dzhousekeeper.net.response.LoginResponse;
+import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.utils.ToastUtils;
 
 import butterknife.BindView;
@@ -75,9 +76,24 @@ public class UserFragment extends Fragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_logout:
-                App.getInstance().logOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-                getActivity().finish();
+
+
+                DialogUtils.showInfoDialog(getActivity(), "确认退出登录吗", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        App.getInstance().logOut();
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                        getActivity().finish();
+
+                    }
+                }, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+
+                    }
+                });
                 break;
             case R.id.rel_changeUserName:
                 showEditDialog();

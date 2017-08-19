@@ -123,7 +123,8 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/bg_btn_enable"
+                android:clickable="false"
+                android:background="@drawable/bg_btn_disable"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:text="获取密码"
@@ -138,6 +139,7 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
                 android:padding="10dp"
                 android:background="@drawable/bg_getlocks_result"
                 android:gravity="center_horizontal"
@@ -157,11 +159,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="撒打算的"/>
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
                 </LinearLayout>
 
                 <TextView

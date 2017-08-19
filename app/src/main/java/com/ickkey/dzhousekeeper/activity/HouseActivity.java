@@ -14,11 +14,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andexert.library.RippleView;
+import com.ickkey.dzhousekeeper.App;
 import com.ickkey.dzhousekeeper.R;
 import com.ickkey.dzhousekeeper.net.CommonResponseListener;
 import com.ickkey.dzhousekeeper.net.NetEngine;
 import com.ickkey.dzhousekeeper.net.Urls;
 import com.ickkey.dzhousekeeper.net.request.BaseRequest;
+import com.ickkey.dzhousekeeper.net.request.GetLocksPwdsReq;
+import com.ickkey.dzhousekeeper.net.response.GetLocksPwdsResponse;
 import com.ickkey.dzhousekeeper.net.response.GetLocksResponse;
 import com.ickkey.dzhousekeeper.net.response.SearchLocksResponse;
 import com.ickkey.dzhousekeeper.utils.DialogUtils;
@@ -56,7 +59,10 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     RelativeLayout rel_rooms;
     @BindView(R.id.ll_dots)
     LinearLayout ll_dots;
-
+    @BindView(R.id.ll_lock_result)
+    LinearLayout ll_lock_result;
+    @BindView(R.id.ll_lock)
+    LinearLayout ll_lock;
     private ViewPagerAdapter vpAdapter;
 
     // 底部小店图片
@@ -74,6 +80,8 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
     private List<Integer> lockIds;
 
+    private List<GetLocksPwdsResponse.LockPwd> lockPwds;
+
     @Override
     int getLayoutId() {
         return R.layout.activity_house_layout;
@@ -88,15 +96,15 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
         StringBuffer sb = new StringBuffer();
         sb.append(lockMsg.province).append(lockMsg.city).append(lockMsg.district).append(lockMsg.installAddress);
         tv_house_address.setText(sb.toString());
-        tv_housekeeper.setText(userInfo.username);
+        tv_housekeeper.setText(App.getInstance().getUserInfo().username);
 
         initData();
     }
 
     private void initData() {
         BaseRequest request = new BaseRequest();
-        request.userId = userInfo.userId;
-        request.token = userInfo.token;
+        request.userId = App.getInstance().getUserInfo().userId;
+        request.token = App.getInstance().getUserInfo().token;
 
         DialogUtils.showProgressDialog(mContext);
 
@@ -113,6 +121,54 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
             }
 
         }, Urls.GETLOCKS, GetLocksResponse.class, mContext, request);
+    }
+
+    private void setLockPwdsView(List<GetLocksPwdsResponse.LockPwd> lockPwds) {
+
+        if (lockPwds != null && !lockPwds.isEmpty()) {
+            ll_lock.setVisibility(View.VISIBLE);
+            ll_lock_result.removeAllViews();
+
+            List<String> lockNOs = new ArrayList<>();
+
+            for (GetLocksPwdsResponse.LockPwd lockPwd : lockPwds) {
+                if (lockPwd.isCheckIn == 1) {
+                    lockNOs.add(lockPwd.locksNo);
+                } else {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                    params.topMargin = 10;
+                    TextView tv_lockNO = new TextView(mContext);
+                    tv_lockNO.setText("门牌编号: " + lockPwd.locksNo);
+                    tv_lockNO.setTextColor(getResources().getColor(R.color.white));
+                    tv_lockNO.setTextSize(16);
+                    tv_lockNO.setLayoutParams(params);
+                    ll_lock_result.addView(tv_lockNO);
+
+                    TextView tv_lockPwd = new TextView(mContext);
+                    tv_lockPwd.setText("密码: " + lockPwd.pwd);
+                    tv_lockPwd.setTextColor(getResources().getColor(R.color.white));
+                    tv_lockPwd.setTextSize(16);
+                    tv_lockPwd.setLayoutParams(params);
+                    ll_lock_result.addView(tv_lockPwd);
+                }
+            }
+
+            if (!lockNOs.isEmpty()) {
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append("门牌编号为");
+                for (int i = 0; i < lockNOs.size(); i++) {
+                    stringBuffer.append(lockNOs.get(i));
+                    if (i != lockNOs.size()-1) {
+                        stringBuffer.append(",");
+                    }
+                }
+                stringBuffer.append("的房间已经有租客入住，您没有权限申请钥匙");
+
+                ToastUtils.showShortToast(mContext, stringBuffer.toString());
+            }
+        }
+
     }
 
     private void initViewPager(List<GetLocksResponse.LockMsg> list) {
@@ -244,6 +300,40 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 finish();
                 break;
             case R.id.btn_getLock:
+
+                if (!lockIds.isEmpty()) {
+                    StringBuffer sb = new StringBuffer();
+                    for (int i = 0; i < lockIds.size(); i++) {
+                        sb.append(lockIds.get(i));
+                        if (i != lockIds.size()-1) {
+                            sb.append(",");
+                        }
+                    }
+
+                    GetLocksPwdsReq getLocksPwdsReq = new GetLocksPwdsReq();
+                    getLocksPwdsReq.locksIds = sb.toString();
+                    getLocksPwdsReq.userId = App.getInstance().getUserInfo().userId;
+                    getLocksPwdsReq.token = App.getInstance().getUserInfo().token;
+
+                    NetEngine.getInstance().getHttpResult(new CommonResponseListener() {
+                        @Override
+                        public void onSucceed(Object obj) {
+                            super.onSucceed(obj);
+                            if (obj != null && obj instanceof GetLocksPwdsResponse) {
+                                GetLocksPwdsResponse response = (GetLocksPwdsResponse) obj;
+                                lockPwds = response.msg;
+                                setLockPwdsView(lockPwds);
+                            }
+                        }
+
+                        @Override
+                        public void onError(String errorMsg) {
+                            super.onError(errorMsg);
+                        }
+                    }, Urls.GETLOCKSPWDS, GetLocksPwdsResponse.class, mContext, getLocksPwdsReq);
+
+                }
+
                 break;
         }
     }

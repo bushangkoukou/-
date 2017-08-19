@@ -68,6 +68,7 @@ public class App extends MultiDexApplication {
     }
 
     public void logOut() {
+        userInfo = null;
         aCache.clear();
         sharedPreferences.edit().clear().commit();
 

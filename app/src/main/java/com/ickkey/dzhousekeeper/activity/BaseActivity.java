@@ -26,7 +26,7 @@ abstract class BaseActivity extends Activity implements View.OnClickListener {
 
     protected Handler mHandler;
 
-    protected LoginResponse userInfo;
+//    protected LoginResponse userInfo;
 
     protected final String tag = getClass().getSimpleName() + UUID.randomUUID();
 
@@ -35,7 +35,7 @@ abstract class BaseActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         mContext = this;
         mHandler = App.getInstance().getMainThreadHandler();
-        userInfo = App.getInstance().getUserInfo();
+//        userInfo = App.getInstance().getUserInfo();
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         init();

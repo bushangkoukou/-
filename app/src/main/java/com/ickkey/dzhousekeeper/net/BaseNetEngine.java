@@ -233,7 +233,7 @@ public class BaseNetEngine {
     }
 
     public void showTokenTimeoutDialog(final Context context) {
-        AlertDialog dialog = DialogUtils.showDialog((Activity) context, R.layout.dialog_token_timeout, false, new DialogUtils.CustomizeAction() {
+        DialogUtils.showDialog((Activity) context, R.layout.dialog_token_timeout, false, new DialogUtils.CustomizeAction() {
             @Override
             public void setCustomizeAction(final AlertDialog dialog, View view) {
                 TextView btn_confirm = (TextView) view.findViewById(R.id.btn_confirm);

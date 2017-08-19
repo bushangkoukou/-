@@ -1,6 +1,8 @@
 package com.ickkey.dzhousekeeper.activity;
 
 
+import android.util.Log;
+
 import com.ickkey.dzhousekeeper.App;
 import com.ickkey.dzhousekeeper.R;
 import com.ickkey.dzhousekeeper.net.CommonResponseListener;
@@ -32,32 +34,35 @@ public class LaunchActivity extends BaseActivity {
         waveView.setWaterAlpha(1);
         waveView.changWater(0.8f);
 
-        if (userInfo == null) {
+        if (App.getInstance().getUserInfo() == null) {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("-wb-", "moveNext(LoginActivity.class)");
                     moveNext(LoginActivity.class);
                     finish();
                 }
             }, 3000);
         } else {
 
-            if (System.currentTimeMillis() < Long.valueOf(userInfo.tokenTimeOut)) {
+            if (System.currentTimeMillis() < Long.valueOf(App.getInstance().getUserInfo().tokenTimeOut)) {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         moveNext(MainActivity.class);
+                        Log.d("-wb-", "moveNext(MainActivity.class)");
                         finish();
                     }
                 }, 1500);
             } else {
                 LoginReq loginReq = new LoginReq();
-                loginReq.mobile = userInfo.username;
-                loginReq.password = userInfo.pwd;
+                loginReq.mobile = App.getInstance().getUserInfo().username;
+                loginReq.password = App.getInstance().getUserInfo().pwd;
                 NetEngine.getInstance().sendLoginRequest(mContext, new CommonResponseListener<LoginResponse>() {
                     @Override
                     public void onSucceed(LoginResponse loginResponse) {
                         super.onSucceed(loginResponse);
+                        Log.d("-wb-", "moveNext(MainActivity.class)onSucceed");
                         loginResponse.tokenTimeOut = String.valueOf(System.currentTimeMillis() + loginResponse.expire * 1000);
                         App.getInstance().saveUserInfo(loginResponse);
                         moveNext(MainActivity.class);
