@@ -3,6 +3,7 @@ package com.ickkey.dzhousekeeper.net;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import com.android.volley.Response;
 import com.ickkey.dzhousekeeper.App;
 import com.ickkey.dzhousekeeper.BuildConfig;
 import com.ickkey.dzhousekeeper.R;
+import com.ickkey.dzhousekeeper.activity.LoginActivity;
 import com.ickkey.dzhousekeeper.net.request.BaseRequest;
 import com.ickkey.dzhousekeeper.net.request.LoginReq;
 import com.ickkey.dzhousekeeper.net.response.BaseResponse;
@@ -20,6 +22,7 @@ import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.utils.Json2ObjHelper;
 import com.ickkey.dzhousekeeper.utils.LogUtil;
 import com.ickkey.dzhousekeeper.utils.NetUtil;
+import com.ickkey.dzhousekeeper.utils.StackManager;
 import com.ickkey.dzhousekeeper.utils.ToastUtils;
 
 import org.json.JSONException;
@@ -240,20 +243,8 @@ public class BaseNetEngine {
                 btn_confirm.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        LoginReq loginReq = new LoginReq();
-                        loginReq.mobile = !TextUtils.isEmpty(App.getInstance().getUserInfo().mobile) ? App.getInstance().getUserInfo().mobile : App.getInstance().getUserInfo().username;
-                        loginReq.password = !TextUtils.isEmpty(App.getInstance().getUserInfo().pwd) ? App.getInstance().getUserInfo().pwd : App.getInstance().getPwd();
-                        NetEngine.getInstance().sendLoginRequest(context, new CommonResponseListener<LoginResponse>() {
-                            @Override
-                            public void onSucceed(LoginResponse loginResponse) {
-                                super.onSucceed(loginResponse);
-                                loginResponse.tokenTimeOut = String.valueOf(System.currentTimeMillis() + loginResponse.expire * 1000);
-                                App.getInstance().saveUserInfo(loginResponse);
-                                ToastUtils.showShortToast(context, "重登成功");
-                                dialog.dismiss();
-
-                            }
-                        }, null, loginReq);
+                        context.startActivity(new Intent(context, LoginActivity.class));
+                        StackManager.getInstance().killAllActivityExceptOne(LoginActivity.class);
                     }
                 });
 

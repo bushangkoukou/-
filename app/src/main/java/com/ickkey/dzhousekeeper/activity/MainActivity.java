@@ -1,6 +1,7 @@
 package com.ickkey.dzhousekeeper.activity;
 
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 import com.ickkey.dzhousekeeper.R;
 import com.ickkey.dzhousekeeper.fragment.HomeFragment;
 import com.ickkey.dzhousekeeper.fragment.UserFragment;
+import com.ickkey.dzhousekeeper.utils.DialogUtils;
+import com.ickkey.dzhousekeeper.utils.StackManager;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -82,4 +85,26 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        DialogUtils.showInfoDialog(mContext,
+                "确认退出"+ getResources().getString(R.string.app_name) +"吗",
+                new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                StackManager.getInstance().killAllActivity();
+
+            }
+        }, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+
+            }
+        });
+
+    }
 }

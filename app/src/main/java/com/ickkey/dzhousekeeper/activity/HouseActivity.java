@@ -240,7 +240,9 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
                 TextView tv_name = new TextView(mContext);
                 tv_name.setText(lockMsg.roomNo);
-                tv_name.setTextColor(getResources().getColor(R.color.green_font));
+                tv_name.setTextColor(lockMsg.isOnlie == 1 ?
+                        getResources().getColor(R.color.green_font)
+                        : getResources().getColor(R.color.grey_font));
                 tv_name.setTextSize(16);
                 tv_name.setSingleLine();
                 LinearLayout.LayoutParams tvNameParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
