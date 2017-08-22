@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:drawableLeft="@drawable/input_icon"
+                android:drawableLeft="@drawable/ic_input_pwd"
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical|left"
                 android:hint="请输入密码" />
