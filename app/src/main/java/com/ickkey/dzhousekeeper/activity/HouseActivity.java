@@ -239,7 +239,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 menu.addView(frameLayout, flParams);
 
                 TextView tv_name = new TextView(mContext);
-                tv_name.setText(lockMsg.roomNo);
+                tv_name.setText(lockMsg.locksNo);
                 tv_name.setTextColor(lockMsg.isOnlie == 1 ?
                         getResources().getColor(R.color.green_font)
                         : getResources().getColor(R.color.grey_font));

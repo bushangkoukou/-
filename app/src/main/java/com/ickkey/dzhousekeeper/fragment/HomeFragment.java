@@ -103,17 +103,17 @@ public class HomeFragment extends Fragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 if (searchLocksResponse != null) {
-//                    if (searchLocksResponse.isfull) {
-//                        ToastUtils.showLongToast(getActivity(), "房间已住满，您没权限进入");
-//                    } else {
-//                        Intent intent = new Intent(getActivity(), HouseActivity.class);
-//                        intent.putExtra("LockMsg", list.get(position));
-//                        startActivity(intent);
-//                    }
+                    if (searchLocksResponse.isfull) {
+                        ToastUtils.showLongToast(getActivity(), "房间已住满，您没权限进入");
+                    } else {
+                        Intent intent = new Intent(getActivity(), HouseActivity.class);
+                        intent.putExtra("LockMsg", list.get(position));
+                        startActivity(intent);
+                    }
 
-                    Intent intent = new Intent(getActivity(), HouseActivity.class);
-                    intent.putExtra("LockMsg", list.get(position));
-                    startActivity(intent);
+//                    Intent intent = new Intent(getActivity(), HouseActivity.class);
+//                    intent.putExtra("LockMsg", list.get(position));
+//                    startActivity(intent);
                 }
             }
         });
