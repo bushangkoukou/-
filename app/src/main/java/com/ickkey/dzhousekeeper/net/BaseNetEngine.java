@@ -245,6 +245,7 @@ public class BaseNetEngine {
                     public void onClick(View view) {
                         context.startActivity(new Intent(context, LoginActivity.class));
                         StackManager.getInstance().killAllActivityExceptOne(LoginActivity.class);
+
                     }
                 });
 
