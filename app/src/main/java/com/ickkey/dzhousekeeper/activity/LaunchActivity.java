@@ -66,7 +66,6 @@ public class LaunchActivity extends BaseActivity {
 
 
 
-
     }
     public  void toLogin(){
         if (App.getInstance().getUserInfo() == null) {
