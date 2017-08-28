@@ -1,15 +1,32 @@
 package com.ickkey.dzhousekeeper.activity;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.ickkey.dzhousekeeper.App;
+import com.ickkey.dzhousekeeper.BuildConfig;
 import com.ickkey.dzhousekeeper.R;
 import com.ickkey.dzhousekeeper.net.CommonResponseListener;
 import com.ickkey.dzhousekeeper.net.NetEngine;
+import com.ickkey.dzhousekeeper.net.Urls;
+import com.ickkey.dzhousekeeper.net.request.GetAppVersionReq;
 import com.ickkey.dzhousekeeper.net.request.LoginReq;
+import com.ickkey.dzhousekeeper.net.response.GetAppVersionResp;
 import com.ickkey.dzhousekeeper.net.response.LoginResponse;
+import com.ickkey.dzhousekeeper.service.DownloadApkService;
+import com.ickkey.dzhousekeeper.utils.DialogUtils;
 import com.ickkey.dzhousekeeper.view.WaveView;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -30,10 +47,28 @@ public class LaunchActivity extends BaseActivity {
 
     @Override
     void init() {
-
         waveView.setWaterAlpha(1);
         waveView.changWater(0.8f);
+        NetEngine.getInstance().getHttpResult(new CommonResponseListener<GetAppVersionResp>(){
+            @Override
+            public void onSucceed(final GetAppVersionResp getAppVersionResp) {
+                super.onSucceed(getAppVersionResp);
+                if(!getAppVersionResp.msg.androidVersion.equals(BuildConfig.VERSION_NAME)){
+                    showUpdateDialog(getAppVersionResp);
+                }else {
+                    toLogin();
+                }
 
+
+            }
+        }, Urls.GET_APP_VERSION,GetAppVersionResp.class,LaunchActivity.this,new GetAppVersionReq());
+
+
+
+
+
+    }
+    public  void toLogin(){
         if (App.getInstance().getUserInfo() == null) {
             mHandler.postDelayed(new Runnable() {
                 @Override
@@ -71,9 +106,48 @@ public class LaunchActivity extends BaseActivity {
                 }, tag, loginReq);
             }
         }
-
     }
+    public void showUpdateDialog(final GetAppVersionResp getAppVersionResp){
+        AlertDialog dialog=  DialogUtils.showDialog(LaunchActivity.this, R.layout.dialog_version, false, new DialogUtils.CustomizeAction() {
+            @Override
+            public void setCustomizeAction(final AlertDialog dialog, View view) {
+                ListView info_list= (ListView) view.findViewById(R.id.info_list);
+                info_list.setAdapter(new UpdateAdapter(getAppVersionResp.msg.androidNotes));
 
+                TextView btn_cancel= (TextView) view.findViewById(R.id.btn_cancel);
+                btn_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        toLogin();
+                    }
+                });
+                TextView btn_update= (TextView) view.findViewById(R.id.btn_update);
+                btn_update.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        Intent intent=new Intent();
+                        intent.setClass(LaunchActivity.this, DownloadApkService.class);
+                        intent.putExtra("url",getAppVersionResp.msg.androidUrl);
+                        LaunchActivity.this.startService(intent);
+
+                    }
+                });
+
+
+            }
+        });
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK)
+                    return true;
+
+                return false;
+            }
+        });
+    }
     @Override
     protected void onResume() {
         waveView.startWave();
@@ -100,5 +174,45 @@ public class LaunchActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+    }
+    private class UpdateAdapter extends BaseAdapter {
+        List<String> infos;
+        public UpdateAdapter(List<String> infos){
+            this.infos=infos;
+        }
+
+        @Override
+        public int getCount() {
+            return infos.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return infos.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            ViewHolder  viewHolder;
+            if(view==null){
+                view=View.inflate(LaunchActivity.this,R.layout.item_update,null);
+                viewHolder=new ViewHolder();
+                viewHolder.tv= (TextView) view.findViewById(R.id.tv);
+                view.setTag(viewHolder);
+            }else {
+                viewHolder= (ViewHolder) view.getTag();
+            }
+            viewHolder.tv.setText((i+1)+"、"+infos.get(i));
+            return view;
+        }
+        private class ViewHolder{
+            public TextView tv;
+        }
+
     }
 }

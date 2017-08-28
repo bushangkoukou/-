@@ -16,4 +16,5 @@ public interface Urls {
 
     String FIND_PWD=BASE_URL+"/api/findpwd";
     String GETLOCKSPWDS = BASE_URL + "/api/getlockspwds";
+    String GET_APP_VERSION=BASE_URL+"/api/version";
 }

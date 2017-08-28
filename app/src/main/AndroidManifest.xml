@@ -51,5 +51,6 @@
         <activity android:name=".activity.ChangePasswordActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
+        <service android:name=".service.DownloadApkService"></service>
     </application>
 </manifest>
