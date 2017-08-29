@@ -73,14 +73,9 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
     private int pageCount;
 
-    private List<GetLocksResponse.LockMsg> lockMsgList;
     private GetLocksResponse getLocksResponse;
 
-    private SearchLocksResponse.LockMsg lockMsg;
-
-    private List<Integer> lockIds;
-
-    private List<GetLocksPwdsResponse.LockPwd> lockPwds;
+    private List<GetLocksResponse.LockMsg> checkLockMsgList;
 
     @Override
     int getLayoutId() {
@@ -91,7 +86,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
     void init() {
         tv_title_base.setText("房屋信息");
 
-        lockMsg = (SearchLocksResponse.LockMsg) getIntent().getSerializableExtra("LockMsg");
+        SearchLocksResponse.LockMsg lockMsg = (SearchLocksResponse.LockMsg) getIntent().getSerializableExtra("LockMsg");
         tv_houseNO.setText(lockMsg.houseNo);
         StringBuffer sb = new StringBuffer();
         sb.append(lockMsg.province).append(lockMsg.city).append(lockMsg.district).append(lockMsg.installAddress);
@@ -113,7 +108,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
             public void onSucceed(Object obj) {
                 if (obj != null && obj instanceof GetLocksResponse) {
                     getLocksResponse = (GetLocksResponse) obj;
-                    lockMsgList = getLocksResponse.msg;
+                    List<GetLocksResponse.LockMsg> lockMsgList = getLocksResponse.msg;
                     if (lockMsgList != null && !lockMsgList.isEmpty()) {
                         initViewPager(lockMsgList);
                     }
@@ -131,15 +126,17 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
 
             List<String> lockNOs = new ArrayList<>();
 
-            for (GetLocksPwdsResponse.LockPwd lockPwd : lockPwds) {
+            for (int i = 0; i < lockPwds.size(); i++) {
+                GetLocksPwdsResponse.LockPwd lockPwd = lockPwds.get(i);
+
                 if (lockPwd.isCheckIn == 1) {
-                    lockNOs.add(lockPwd.locksNo);
+                    lockNOs.add(checkLockMsgList.get(i).roomNo);
                 } else {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT);
                     params.topMargin = 10;
                     TextView tv_lockNO = new TextView(mContext);
-                    tv_lockNO.setText("门牌编号: " + lockPwd.locksNo);
+                    tv_lockNO.setText("门锁编号: " + checkLockMsgList.get(i).roomNo);
                     tv_lockNO.setTextColor(getResources().getColor(R.color.white));
                     tv_lockNO.setTextSize(16);
                     tv_lockNO.setLayoutParams(params);
@@ -152,11 +149,35 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                     tv_lockPwd.setLayoutParams(params);
                     ll_lock_result.addView(tv_lockPwd);
                 }
+
             }
+
+//            for (GetLocksPwdsResponse.LockPwd lockPwd : lockPwds) {
+//                if (lockPwd.isCheckIn == 1) {
+//                    lockNOs.add(lockPwd.locksNo);
+//                } else {
+//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+//                            LinearLayout.LayoutParams.WRAP_CONTENT);
+//                    params.topMargin = 10;
+//                    TextView tv_lockNO = new TextView(mContext);
+//                    tv_lockNO.setText("门锁编号: " + lockPwd.locksNo);
+//                    tv_lockNO.setTextColor(getResources().getColor(R.color.white));
+//                    tv_lockNO.setTextSize(16);
+//                    tv_lockNO.setLayoutParams(params);
+//                    ll_lock_result.addView(tv_lockNO);
+//
+//                    TextView tv_lockPwd = new TextView(mContext);
+//                    tv_lockPwd.setText("密码: " + lockPwd.pwd);
+//                    tv_lockPwd.setTextColor(getResources().getColor(R.color.white));
+//                    tv_lockPwd.setTextSize(16);
+//                    tv_lockPwd.setLayoutParams(params);
+//                    ll_lock_result.addView(tv_lockPwd);
+//                }
+//            }
 
             if (!lockNOs.isEmpty()) {
                 StringBuffer stringBuffer = new StringBuffer();
-                stringBuffer.append("门牌编号为");
+                stringBuffer.append("门锁编号为");
                 for (int i = 0; i < lockNOs.size(); i++) {
                     stringBuffer.append(lockNOs.get(i));
                     if (i != lockNOs.size()-1) {
@@ -176,7 +197,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
         btn_getLock.setVisibility(View.VISIBLE);
         view_pager.removeAllViews();
 
-        lockIds = new ArrayList<>();
+        checkLockMsgList = new ArrayList<>();
 
         int count = list.size();
         pageCount = count % 3 == 0 ? count / 3 : count / 3 + 1;
@@ -196,7 +217,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
             group.setPadding(0, 20, 0, 35);
             for (int j = i * 3; j < (i + 1) * 3 && j < count; j++) {
 
-                final GetLocksResponse.LockMsg lockMsg = list.get(i);
+                final GetLocksResponse.LockMsg lockMsg = list.get(j);
 
                 final LinearLayout menu = new LinearLayout(mContext);
                 LinearLayout.LayoutParams menuParams = new LinearLayout.LayoutParams(width / 3, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -239,7 +260,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 menu.addView(frameLayout, flParams);
 
                 TextView tv_name = new TextView(mContext);
-                tv_name.setText(lockMsg.locksNo);
+                tv_name.setText(lockMsg.roomNo);
                 tv_name.setTextColor(lockMsg.isOnlie == 1 ?
                         getResources().getColor(R.color.green_font)
                         : getResources().getColor(R.color.grey_font));
@@ -256,12 +277,12 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                         boolean isSelected = iv_key.getVisibility() == View.VISIBLE;
                         iv_key.setVisibility(isSelected ? View.GONE : View.VISIBLE);
                         if (!isSelected) {
-                            lockIds.add(lockMsg.id);
+                            checkLockMsgList.add(lockMsg);
                         } else {
-                            if (lockIds.contains(lockMsg.id))
-                                lockIds.remove((Integer) lockMsg.id);
+                            if (checkLockMsgList.contains(lockMsg))
+                                checkLockMsgList.remove(lockMsg);
                         }
-                        if (lockIds.isEmpty()) {
+                        if (checkLockMsgList.isEmpty()) {
                             btn_getLock.setBackground(getResources().getDrawable(R.drawable.bg_btn_disable));
                         } else {
                             btn_getLock.setBackground(getResources().getDrawable(R.drawable.bg_btn_enable));
@@ -303,11 +324,11 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                 break;
             case R.id.btn_getLock:
 
-                if (!lockIds.isEmpty()) {
+                if (!checkLockMsgList.isEmpty()) {
                     StringBuffer sb = new StringBuffer();
-                    for (int i = 0; i < lockIds.size(); i++) {
-                        sb.append(lockIds.get(i));
-                        if (i != lockIds.size()-1) {
+                    for (int i = 0; i < checkLockMsgList.size(); i++) {
+                        sb.append(checkLockMsgList.get(i).id);
+                        if (i != checkLockMsgList.size()-1) {
                             sb.append(",");
                         }
                     }
@@ -323,7 +344,7 @@ public class HouseActivity extends BaseActivity implements ViewPager.OnPageChang
                             super.onSucceed(obj);
                             if (obj != null && obj instanceof GetLocksPwdsResponse) {
                                 GetLocksPwdsResponse response = (GetLocksPwdsResponse) obj;
-                                lockPwds = response.msg;
+                                List<GetLocksPwdsResponse.LockPwd> lockPwds = response.msg;
                                 setLockPwdsView(lockPwds);
                             }
                         }
